@@ -1,3 +1,14 @@
+#custom
+src/model/data/raw
+src/model/data/train
+src/model/data/test
+src/model/data/valid
+
+*.h5
+.ipynb_checkpoints
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
