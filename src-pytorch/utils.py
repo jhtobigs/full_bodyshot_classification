@@ -34,4 +34,5 @@ def get_dataset(path:str, mode:str) -> Dataset:
     return StyleDataset(path, mode, transform=transform)
 
 def get_dataloader(dataset:Dataset, batch_size:int, shuffle=True, num_workers=4) -> DataLoader:
+    shuffle = True if dataset.mode == 'train' else False
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)

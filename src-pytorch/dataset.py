@@ -15,6 +15,7 @@ class StyleDataset(Dataset):
     """
     def __init__(self, path, mode, transform=None):
         super(Dataset, self).__init__()
+        self.mode = mode
         self.path = os.path.join(path, mode)
         img_pass = glob.glob(os.path.join(self.path, 'pass/*.jpg'))
         img_fail = glob.glob(os.path.join(self.path, 'fail/*.jpg'))

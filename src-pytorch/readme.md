@@ -18,7 +18,8 @@ src-pytorch/
       └── test/
           ├── pass/
           └── fail/
-  ├── experiments/ # for saving best model
+  ├── experiments/ # for saving best model (pytorch)
+  ├── logs/ # for saving checkpoint and hyperparams (pytorch-lightning)
   ├── dataset.py
   ├── metric.py
   ├── net.py
@@ -33,5 +34,5 @@ src-pytorch/
 - [ ] Get More Data (including EDGE images)
 - [ ] Add Plotting Code
 - [ ] Add Early Stopping Code
-- [ ] Try PyTorch Lightning Module
+- [x] Try PyTorch Lightning Module
 - [ ] Flask Demo
