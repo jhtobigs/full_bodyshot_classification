@@ -15,7 +15,7 @@ src/
       ├── utils.py
      
     └── data/  
-      └── raw
-      └── train
-      └── test
-      └── valid
+      └── raw/
+      └── train/
+      └── test/
+      └── valid/
