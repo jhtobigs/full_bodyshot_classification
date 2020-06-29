@@ -2,32 +2,52 @@
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import models
 
 from utils import get_dataloader, get_dataset
 
 
-class ResNetBaseline(pl.LightningModule):
+class Baseline(pl.LightningModule):
+    """ Pretrained Baseline Models
+
+        1. resnet50
+        2. mobilenet_v2
+    """
     def __init__(self, args):
-        super(ResNetBaseline, self).__init__()
+        super(Baseline, self).__init__()
         self.args = args
         self.path = args.path
         self.lr = args.lr        
         self.batch_size = args.batch_size
         self.num_classes = args.num_classes
+        self.model = args.model 
 
-        resnet = models.resnet50(pretrained=True)
-        modules = list(resnet.children())[:-1] # right after flatten
-        self.extractor = nn.Sequential(
-                            *modules
-                        )
-        self.classifier = nn.Linear(resnet.fc.in_features, self.num_classes)
-        resnet = None
-    
+        model_list = ['resnet', 'mobilenet']
+        if self.model not in model_list:
+            raise ValueError('Not-supported Model!')
+        
+        if self.model == 'resnet':
+            net = models.resnet50(pretrained=True)
+            modules = list(net.children())[:-1]
+            self.extractor = nn.Sequential(*modules)    
+            self.classifier = nn.Linear(net.fc.in_features, self.num_classes)
+        elif self.model == 'mobilenet':
+            net = models.mobilenet_v2(pretrained=True)
+            self.extractor = net.features
+            self.classifier = nn.Sequential(
+                nn.Dropout(0.2),
+                nn.Linear(net.last_channel, self.num_classes),
+            )
+        net = None
+            
     def forward(self, x):
         feature = self.extractor(x)
-        feature = feature.view(feature.size(0), -1)
+        if self.model == 'resnet':
+            feature = feature.view(feature.size(0), -1)
+        elif self.model == 'mobilenet':
+            feature = F.adaptive_avg_pool2d(feature, 1).reshape(feature.shape[0], -1)
         classification = self.classifier(feature)
         return classification
     
