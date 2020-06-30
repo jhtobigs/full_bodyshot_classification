@@ -1,8 +1,10 @@
 #custom
-src/model/data/raw
-src/model/data/train
-src/model/data/test
-src/model/data/valid
+src-pytorch/data/fail
+src-pytorch/data/pass
+src-pytorch/data/train
+src-pytorch/data/test
+src-pytorch/data/valid
+
 
 *.h5
 .ipynb_checkpoints
