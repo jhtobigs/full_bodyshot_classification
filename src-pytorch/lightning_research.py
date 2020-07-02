@@ -79,9 +79,13 @@ class Baseline(pl.LightningModule):
         correct += predicted.eq(target).sum().item()
         accuracy = 100*(correct/target.size(0))
 
-        log = {'train_loss':loss}
+        return {'loss':loss, 'trn_acc':torch.tensor(accuracy)}
 
-        return {'loss':loss, 'trn_acc':accuracy, 'log':log}
+    def training_epoch_end(self, outputs):
+        train_loss_mean = torch.stack([x['loss'] for x in outputs]).mean()
+        train_acc_mean = torch.stack([x['trn_acc'] for x in outputs]).mean()
+        log = {'avg_trn_loss':train_loss_mean, 'avg_trn_acc':train_acc_mean}
+        return {'log':log, 'trn_loss':train_loss_mean, 'trn_acc':train_acc_mean}
 
     def validation_step(self, batch, batch_idx):
         data, target = batch
@@ -95,9 +99,10 @@ class Baseline(pl.LightningModule):
         correct += predicted.eq(target).sum().item()
         accuracy = 100*(correct/target.size(0))
 
-        return {'val_loss':loss, 'val_acc':accuracy}
+        return {'val_loss':loss, 'val_acc':torch.tensor(accuracy)}
 
     def validation_epoch_end(self, outputs):
         val_loss_mean = torch.stack([x['val_loss'] for x in outputs]).mean()
-        tensorboard_log = {'val_loss':val_loss_mean}
-        return {'val_loss':val_loss_mean, 'log':tensorboard_log}
+        val_acc_mean = torch.stack([x['val_acc'] for x in outputs]).mean()
+        tensorboard_log = {'avg_val_loss':val_loss_mean, 'avg_val_acc':val_acc_mean}
+        return {'val_loss':val_loss_mean, 'val_acc':val_acc_mean, 'log':tensorboard_log}
