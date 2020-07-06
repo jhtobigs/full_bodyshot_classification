@@ -15,26 +15,29 @@ class Baseline(pl.LightningModule):
         1. resnet50
         2. mobilenet_v2
     """
-    def __init__(self, args):
+    def __init__(self, hparams):
         super(Baseline, self).__init__()
-        self.args = args
-        self.path = args.path
-        self.lr = args.lr        
-        self.batch_size = args.batch_size
-        self.num_classes = args.num_classes
-        self.model = args.model 
+        self.hparams = hparams
+        self.path = hparams['path']
+        self.lr = hparams['lr']
+        self.batch_size = hparams['batch_size']
+        self.num_classes = hparams['num_classes']
+        self.model = hparams['model']
+        
+        self.pretrain = False
+        self.save_hyperparameters()
 
         model_list = ['resnet', 'mobilenet']
         if self.model not in model_list:
-            raise ValueError('Not-supported Model!')
+            raise ValueError('Not supported Model!')
         
         if self.model == 'resnet':
-            net = models.resnet50(pretrained=True)
+            net = models.resnet50(pretrained=self.pretrain)
             modules = list(net.children())[:-1]
             self.extractor = nn.Sequential(*modules)    
             self.classifier = nn.Linear(net.fc.in_features, self.num_classes)
         elif self.model == 'mobilenet':
-            net = models.mobilenet_v2(pretrained=True)
+            net = models.mobilenet_v2(pretrained=self.pretrain)
             self.extractor = net.features
             self.classifier = nn.Sequential(
                 nn.Dropout(0.2),
@@ -63,6 +66,11 @@ class Baseline(pl.LightningModule):
         val_dset = get_dataset(self.path, 'valid')
         val_loader = get_dataloader(val_dset, self.batch_size)
         return val_loader
+
+    def test_dataloader(self):
+        test_dset = get_dataset(self.path, 'test')
+        test_loader = get_dataloader(test_dset, self.batch_size)
+        return test_loader
 
     def configure_optimizers(self):
         return optim.Adam(self.parameters(), lr=self.lr)
@@ -106,3 +114,24 @@ class Baseline(pl.LightningModule):
         val_acc_mean = torch.stack([x['val_acc'] for x in outputs]).mean()
         tensorboard_log = {'avg_val_loss':val_loss_mean, 'avg_val_acc':val_acc_mean}
         return {'val_loss':val_loss_mean, 'val_acc':val_acc_mean, 'log':tensorboard_log}
+
+    def test_step(self, batch, batch_idx):
+        data, target = batch
+        y_hat = self(data)
+        criterion = nn.CrossEntropyLoss()
+        loss = criterion(y_hat, target)
+
+        # acc
+        correct = 0
+        _, predicted = torch.max(y_hat, 1)
+        correct += predicted.eq(target).sum().item()
+        accuracy = 100*(correct/target.size(0))
+
+        return {'test_loss':loss, 'test_acc':torch.tensor(accuracy)}
+    
+    def test_epoch_end(self, outputs):
+        test_loss_mean = torch.stack([x['test_loss'] for x in outputs]).mean()
+        test_acc_mean = torch.stack([x['test_acc'] for x in outputs]).mean()
+        tensorboard_log = {'avg_test_loss':test_loss_mean, 'avg_test_acc':test_acc_mean}
+        return {'test_loss':test_loss_mean, 'test_acc':test_acc_mean, 'log':tensorboard_log}
+        
