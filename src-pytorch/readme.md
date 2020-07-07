@@ -33,7 +33,7 @@ src-pytorch/
 ```
 
 ## [3] TODO
-- [ ] Apply Augmentation
+- [x] Apply Augmentation
 - [x] Get More Data 
 - [x] Get More EDGE Data (continuously)
 - [x] Add Plotting Code (lightning)
