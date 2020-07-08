@@ -15,8 +15,7 @@ class PrintCallback(pl.Callback):
         print('*** Training is done.')
 
 def main(hparams):
-    model = Baseline(vars(hparams))
-    # model = ReXNetV1(vars(hparams))
+    model = ReXNetV1(vars(hparams)) if hparams.model == 'rexnet' else Baseline(vars(hparams))
     print_callback = [PrintCallback()]
     trainer = pl.Trainer(
                 gpus=hparams.gpus,
@@ -57,7 +56,7 @@ if __name__ == "__main__":
     parser.add_argument('--path', type=str, default='D:/data/musinsa/train_test_valid', help='parent directory containing train, val, test data')
     parser.add_argument('--num_classes', type=int, default=2, help='output class number')
     parser.add_argument('--distributed_backend', type=str, default='dp')
-    parser.add_argument('--model', type=str, default='mobilenet')
+    parser.add_argument('--model', type=str, default='mobilenet', help='resnet/mobilenet/efficientnet/rexnet')
     parser.add_argument('--mode', type=str, default='train', help='train or test')
     parser.add_argument('--pretrain', type=str, default='true', help='using ImageNet-pretrained Model')
 

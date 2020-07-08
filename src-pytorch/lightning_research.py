@@ -15,6 +15,7 @@ class Baseline(pl.LightningModule):
 
         1. resnet50
         2. mobilenet_v2
+        3. efficientnet_b0
     """
     def __init__(self, hparams):
         super(Baseline, self).__init__()
@@ -44,13 +45,13 @@ class Baseline(pl.LightningModule):
                 nn.Dropout(0.2),
                 nn.Linear(net.last_channel, self.num_classes),
             )
-
+        elif self.model = 'efficientnet':
+            self.classifier = EfficientNet.from_pretrained('efficientnet-b0', num_classes=2)
         net = None
             
     def forward(self, x):
         if self.model == 'efficientnet':
-            efficientnet = EfficientNet.from_pretrained('efficientnet-b0', num_classes=2)
-            return efficientnet(x) ## optimizer bug 잡기
+            return self.classifier(x)
 
         feature = self.extractor(x)
         if self.model == 'resnet':
