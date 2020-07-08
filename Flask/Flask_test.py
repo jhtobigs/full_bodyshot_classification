@@ -1,12 +1,12 @@
 import os
 import torch
 from flask import Flask, request, redirect, url_for
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = './Image/'  # 이미지 저장할 폴더 지정
-ALLOWED_EXTENSIONS = {'JPG'}  # 허용 가능한 확장자만 ,PNG이면 바꾸기
+ALLOWED_EXTENSIONS = {'JPG','jpg'}  # 허용 가능한 확장자만 ,PNG이면 바꾸기
 DEVICE = 'cpu'  # 환경에 맞게 (gpu면 나중에 바꾸기)
-IMAGE_SRC = "./style.jpg"  # 배경 이미지
+IMAGE_SRC = "https://nextstylemag.com/wp-content/uploads/2020/02/men-shirts-style94.jpg" # 배경 이미지
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -25,7 +25,7 @@ def index():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 이미지 올리면 지정한 폴더 안에 이미지 저장
 
-            model = torch.load('./src_pytorch/musinsa_model.pt', map_location=DEVICE)  # .module -> 멀티 지피유 썼으면 뒤에 붙이기
+            model = torch.load('../src-pytorch/musinsa_model.pt', map_location=DEVICE)  # .module -> 멀티 지피유 썼으면 뒤에 붙이기
             model.eval()
 
             # input image transform
@@ -89,4 +89,4 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)
