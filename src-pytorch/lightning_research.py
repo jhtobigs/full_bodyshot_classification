@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from efficientnet_pytorch import EfficientNet
 from torchvision import models
 
 from utils import get_dataloader, get_dataset
@@ -24,10 +25,10 @@ class Baseline(pl.LightningModule):
         self.num_classes = hparams['num_classes']
         self.model = hparams['model']
         
-        self.pretrain = False
+        self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
         self.save_hyperparameters()
 
-        model_list = ['resnet', 'mobilenet']
+        model_list = ['resnet', 'mobilenet', 'efficientnet']
         if self.model not in model_list:
             raise ValueError('Not supported Model!')
         
@@ -43,9 +44,14 @@ class Baseline(pl.LightningModule):
                 nn.Dropout(0.2),
                 nn.Linear(net.last_channel, self.num_classes),
             )
+
         net = None
             
     def forward(self, x):
+        if self.model == 'efficientnet':
+            efficientnet = EfficientNet.from_pretrained('efficientnet-b0', num_classes=2)
+            return efficientnet(x) ## optimizer bug 잡기
+
         feature = self.extractor(x)
         if self.model == 'resnet':
             feature = feature.view(feature.size(0), -1)
@@ -134,4 +140,3 @@ class Baseline(pl.LightningModule):
         test_acc_mean = torch.stack([x['test_acc'] for x in outputs]).mean()
         tensorboard_log = {'avg_test_loss':test_loss_mean, 'avg_test_acc':test_acc_mean}
         return {'test_loss':test_loss_mean, 'test_acc':test_acc_mean, 'log':tensorboard_log}
-        
