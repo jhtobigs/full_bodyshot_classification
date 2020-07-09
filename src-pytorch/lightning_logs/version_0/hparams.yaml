@@ -1,0 +1,26 @@
+batch_size: 64
+bn_momentum: 0.9
+classes: 1000
+depth_mult: 1.0
+dropout_ratio: 0.2
+epoch: 200
+final_ch: 180
+gpus: 1
+hparams:
+  batch_size: 64
+  epoch: 200
+  gpus: 1
+  lr: 0.0001
+  mult: 2.0
+  num_classes: 2
+  path: /content/drive/My Drive/Projects/full_bodyshot_classification/src-pytorch/data
+  pretrain: 'True'
+input_ch: 16
+lr: 0.0001
+mult: 2.0
+num_classes: 2
+path: /content/drive/My Drive/Projects/full_bodyshot_classification/src-pytorch/data
+pretrain: 'True'
+se_ratio: 12
+use_se: true
+width_mult: 1.0

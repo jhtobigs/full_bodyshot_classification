@@ -151,9 +151,9 @@ class ReXNetV1(nn.Module):
         x = self.output(x).squeeze()
         return x
 
+# Set a model
 class CustomReXNetV1(pl.LightningModule):
     """
-    TODO: ReXNet 버전 별 param 분리코드
     """
     def __init__(self, hparams, input_ch=16, final_ch=180, width_mult=1.0, depth_mult=1.0, classes=1000,
                  use_se=True,
@@ -167,11 +167,12 @@ class CustomReXNetV1(pl.LightningModule):
         self.lr = hparams['lr']
         self.batch_size = hparams['batch_size']
         self.num_classes = hparams['num_classes']
-        
+        self.width_mult = hparams['mult'] # Add mult for select scale
         self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
+
         if self.pretrain:
-            self.model = ReXNetV1()
-            self.model.load_state_dict(torch.load('./rexnet_pretrained/rexnetv1_1.0x.pth'))
+            self.model = ReXNetV1(width_mult=self.width_mult)
+            self.model.load_state_dict(torch.load('./rexnet_pretrained/rexnetv1_{}x.pth'.format(str(hparams['mult'])))) # load_scale
         self.save_hyperparameters()
 
         layers = [1, 2, 2, 3, 3, 5]
@@ -223,8 +224,7 @@ class CustomReXNetV1(pl.LightningModule):
 
         # additional
         self.fc = nn.Sequential(
-            nn.Linear(1000, 512),
-            nn.Linear(512, 2)
+            nn.Linear(1000, 2)
         )
 
     def forward(self, x):
