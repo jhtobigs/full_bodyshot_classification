@@ -2,6 +2,10 @@ import os
 import torch
 from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
+import io
+import torchvision.transforms as transforms
+from PIL import Image
+
 
 UPLOAD_FOLDER = './Image/'  # 이미지 저장할 폴더 지정
 ALLOWED_EXTENSIONS = {'JPG','jpg'}  # 허용 가능한 확장자만 ,PNG이면 바꾸기
