@@ -2,7 +2,9 @@ eda.ipynb
 data/
 experiments/
 logs/
-RexNet_Pretrained/
+rexnet_pretrained/
+lightning_logs/
+*.pt
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,python,jupyternotebooks
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,python,jupyternotebooks
