@@ -15,7 +15,13 @@ class PrintCallback(pl.Callback):
         print('*** Training is done.')
 
 def main(hparams):
-    model = ReXNetV1(vars(hparams)) if hparams.model == 'rexnet' else Baseline(vars(hparams))
+    if hparams.model == 'rexnet':
+        model = ReXNetV1(vars(hparams))
+        if self.pretrain:
+            model.load_state_dict(torch.load('rexnet_pretrained/rexnetv1_2.0x.pth'))
+    else:
+        model = Baseline(vars(hparams))
+    
     print_callback = [PrintCallback()]
     trainer = pl.Trainer(
                 gpus=hparams.gpus,

@@ -4,7 +4,7 @@ src-pytorch/data/pass
 src-pytorch/data/train
 src-pytorch/data/test
 src-pytorch/data/valid
-
+src-pytorch/rexnet_pretrained/
 
 *.h5
 .ipynb_checkpoints

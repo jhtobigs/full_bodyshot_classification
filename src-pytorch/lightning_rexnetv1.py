@@ -13,7 +13,6 @@ import torch.optim as optim
 from torchvision import models
 
 import pytorch_lightning as pl
-import rexnetv1
 from utils import get_dataloader, get_dataset
 
 
@@ -109,9 +108,6 @@ class ReXNetV1(pl.LightningModule):
         self.num_classes = hparams['num_classes']
         
         self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
-        if self.pretrain:
-            self.model = rexnetv1.ReXNetV1(width_mult=1.0)
-            self.model.load_state_dict(torch.load('./rexnetv1_1.0x.pth'))
         self.save_hyperparameters()
 
         layers = [1, 2, 2, 3, 3, 5]
@@ -162,8 +158,6 @@ class ReXNetV1(pl.LightningModule):
             nn.Conv2d(pen_channels, classes, 1, bias=True))
 
     def forward(self, x):
-        if self.pretrain:
-            return self.model(x)
         x = self.features(x)
         x = self.output(x).squeeze()
         return x
