@@ -1,11 +1,12 @@
 # PyTorch Lightning Module (Engineering & Non-essential Part)
 import argparse
 
+import torch
 import pytorch_lightning as pl
 from pytorch_lightning.logging import TensorBoardLogger
 
 from lightning_research import Baseline
-from lightning_rexnetv1 import ReXNetV1
+from lightning_rexnetv1 import CustomReXNetV1
 
 
 class PrintCallback(pl.Callback):
@@ -15,12 +16,7 @@ class PrintCallback(pl.Callback):
         print('*** Training is done.')
 
 def main(hparams):
-    if hparams.model == 'rexnet':
-        model = ReXNetV1(vars(hparams))
-        if self.pretrain:
-            model.load_state_dict(torch.load('rexnet_pretrained/rexnetv1_2.0x.pth'))
-    else:
-        model = Baseline(vars(hparams))
+    model = CustomReXNetV1(vars(hparams)) if hparams.model == 'rexnet' else Baseline(vars(hparams))
     
     print_callback = [PrintCallback()]
     trainer = pl.Trainer(
