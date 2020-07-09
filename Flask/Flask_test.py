@@ -2,10 +2,9 @@ import os
 import torch
 from flask import Flask, request, redirect, url_for
 from werkzeug.utils import secure_filename
-import io
 import torchvision.transforms as transforms
 from PIL import Image
-
+import io
 
 UPLOAD_FOLDER = './Image/'  # 이미지 저장할 폴더 지정
 ALLOWED_EXTENSIONS = {'JPG','jpg'}  # 허용 가능한 확장자만 ,PNG이면 바꾸기
@@ -29,22 +28,26 @@ def index():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 이미지 올리면 지정한 폴더 안에 이미지 저장
 
-            model = torch.load('../src-pytorch/musinsa_model.pt', map_location=DEVICE)  # .module -> 멀티 지피유 썼으면 뒤에 붙이기
-            model.eval()
+            model = torch.load('./model/sample.pt', map_location=DEVICE)  # .module -> 멀티 지피유 썼으면 뒤에 붙이기
+
 
             # input image transform
+            def image_parse(self, image_path):
+                image = Image.open(UPLOAD_FOLDER+filename)
+
+                return image
+
             def transform_image(image_bytes):
-                my_transforms = transforms.Compose([transforms.Resize(255),
-                                                    transforms.CenterCrop(224),
+                my_transforms = transforms.Compose([transforms.Resize((224,224)),
                                                     transforms.ToTensor(),
                                                     transforms.Normalize(
                                                         [0.485, 0.456, 0.406],
                                                         [0.229, 0.224, 0.225])])
-                image = Image.open(io.BytesIO(image_bytes))
+                image = image_parse(image_bytes, UPLOAD_FOLDER+"filename")
                 return my_transforms(image).unsqueeze(0)
 
             # prediction
-            tensor = transform_image(filename)
+            tensor = transform_image(filename, )
             outputs = model.forward(tensor)
             _, y_hat = outputs.max(1)
             prediction = str(y_hat.item())
@@ -70,7 +73,7 @@ def index():
                    <p style="TEXT-ALIGN: center">
                    %s
                    </p>
-                   """ % (IMAGE_SRC, str(prediction[0]))
+                   """ % (IMAGE_SRC, str(prediction))
     return """
     <!doctype html>
     <title>Tobigs Musinsa Style Check</title>
