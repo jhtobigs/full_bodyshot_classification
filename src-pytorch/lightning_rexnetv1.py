@@ -153,6 +153,7 @@ class ReXNetV1(nn.Module):
 
 class CustomReXNetV1(pl.LightningModule):
     """
+    TODO: ReXNet 버전 별 param 분리코드
     """
     def __init__(self, hparams, input_ch=16, final_ch=180, width_mult=1.0, depth_mult=1.0, classes=1000,
                  use_se=True,
@@ -222,7 +223,8 @@ class CustomReXNetV1(pl.LightningModule):
 
         # additional
         self.fc = nn.Sequential(
-            nn.Linear(1000, 2)
+            nn.Linear(1000, 512),
+            nn.Linear(512, 2)
         )
 
     def forward(self, x):

@@ -16,7 +16,8 @@ class PrintCallback(pl.Callback):
         print('*** Training is done.')
 
 def main(hparams):
-    model = CustomReXNetV1(vars(hparams)) if hparams.model == 'rexnet' else Baseline(vars(hparams))
+    model = CustomReXNetV1(vars(hparams), width_mult=1.0) \
+        if hparams.model == 'rexnet' else Baseline(vars(hparams))
     
     print_callback = [PrintCallback()]
     trainer = pl.Trainer(
@@ -30,10 +31,11 @@ def main(hparams):
 
     if hparams.mode.lower() == 'train': # train + test
         trainer.fit(model)  
+        torch.save(model, './sample.pt')
     elif hparams.mode.lower() == 'test': # pretrained + test
         model = model.load_from_checkpoint(
                     ## TODO
-                    checkpoint_path='logs\musinsa\\version_35\checkpoints\epoch=6.ckpt'
+                    checkpoint_path='logs/train/version_35/checkpoints/epoch=6.ckpt'
                 )
     else:
         raise ValueError('You must choose train or test mode')
