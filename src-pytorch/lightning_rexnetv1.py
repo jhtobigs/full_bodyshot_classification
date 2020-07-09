@@ -6,13 +6,14 @@ MIT license
 # https://github.com/clovaai/rexnet
 from math import ceil
 
-import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import models
 
+import pytorch_lightning as pl
+import rexnetv1
 from utils import get_dataloader, get_dataset
 
 
@@ -107,6 +108,10 @@ class ReXNetV1(pl.LightningModule):
         self.batch_size = hparams['batch_size']
         self.num_classes = hparams['num_classes']
         
+        self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
+        if self.pretrain:
+            self.model = rexnetv1.ReXNetV1(width_mult=1.0)
+            self.model.load_state_dict(torch.load('./rexnetv1_1.0x.pth'))
         self.save_hyperparameters()
 
         layers = [1, 2, 2, 3, 3, 5]
@@ -157,6 +162,8 @@ class ReXNetV1(pl.LightningModule):
             nn.Conv2d(pen_channels, classes, 1, bias=True))
 
     def forward(self, x):
+        if self.pretrain:
+            return self.model(x)
         x = self.features(x)
         x = self.output(x).squeeze()
         return x
@@ -238,4 +245,3 @@ class ReXNetV1(pl.LightningModule):
         test_acc_mean = torch.stack([x['test_acc'] for x in outputs]).mean()
         tensorboard_log = {'avg_test_loss':test_loss_mean, 'avg_test_acc':test_acc_mean}
         return {'test_loss':test_loss_mean, 'test_acc':test_acc_mean, 'log':tensorboard_log}
-        
