@@ -63,6 +63,7 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, default='mobilenet', help='resnet/mobilenet/efficientnet/rexnet')
     parser.add_argument('--mode', type=str, default='train', help='train or test')
     parser.add_argument('--pretrain', type=str, default='true', help='using ImageNet-pretrained Model')
+    parser.add_argument('--mult', type=float, default=1.0, help='rexnet scale(1.0/1.3/1.5/2.0)')
 
     args = parser.parse_args()
     main(args)
