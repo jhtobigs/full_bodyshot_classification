@@ -92,6 +92,8 @@ class LinearBottleneck(nn.Module):
 
 
 class ReXNetV1(nn.Module):
+    """ dropout_rate default=0.2
+    """
     def __init__(self, input_ch=16, final_ch=180, width_mult=1.0, depth_mult=1.0, classes=1000,
                  use_se=True,
                  se_ratio=12,
