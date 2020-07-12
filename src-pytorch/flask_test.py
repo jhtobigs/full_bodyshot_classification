@@ -13,6 +13,8 @@ from werkzeug.utils import secure_filename
 from lightning_rexnetv1 import CustomReXNetV1
 
 UPLOAD_FOLDER = './Image/'  # 이미지 저장할 폴더 지정
+if not os.path.exists(UPLOAD_FOLDER):
+    os.mkdir(UPLOAD_FOLDER)
 ALLOWED_EXTENSIONS = {'JPG','jpg'}  # 허용 가능한 확장자만 ,PNG이면 바꾸기
 DEVICE = 'cpu'  # 환경에 맞게 (gpu면 나중에 바꾸기)
 IMAGE_SRC = "https://nextstylemag.com/wp-content/uploads/2020/02/men-shirts-style94.jpg" # 배경 이미지
@@ -33,8 +35,7 @@ def index():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 이미지 올리면 지정한 폴더 안에 이미지 저장
 
-            model = CustomReXNetV1(vars(args))
-            model.load_state_dict(torch.load('./sample.pt', map_location=DEVICE)) # sample model (rexnet)
+            model = CustomReXNetV1.load_from_checkpoint('./sample.ckpt', map_location=DEVICE)
             model.eval()
 
             # input image transform
