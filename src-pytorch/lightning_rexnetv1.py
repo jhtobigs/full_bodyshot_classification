@@ -174,7 +174,7 @@ class CustomReXNetV1(pl.LightningModule):
 
         if self.pretrain:
             self.model = ReXNetV1(width_mult=self.width_mult)
-            self.model.load_state_dict(torch.load('./rexnet_pretrained/rexnetv1_{}x.pth'.format(str(hparams['mult'])))) # load_scale
+            self.model.load_state_dict(torch.load('./model/rexnetv1_{}x.pth'.format(str(hparams['mult'])))) # load_scale
         self.save_hyperparameters()
 
         layers = [1, 2, 2, 3, 3, 5]
