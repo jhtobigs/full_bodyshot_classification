@@ -39,4 +39,4 @@ src-pytorch/
 - [x] Add Plotting Code (lightning)
 - [x] Add Early Stopping Code (lightning)
 - [x] Try PyTorch Lightning Module
-- [ ] Flask Demo
+- [x] Flask Demo
