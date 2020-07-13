@@ -122,6 +122,6 @@ if __name__ == "__main__":
 
     parser.add_argument('--step_size', type=int, default=5, help='lr decay step size')
     parser.add_argument('--decay_rate', type=float, default=0.2, help='lr decay rate')
-    
+
     args = parser.parse_args()
     app.run(host='127.0.0.1', port=5000, debug=True)
