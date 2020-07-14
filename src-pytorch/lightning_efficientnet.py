@@ -1,63 +1,43 @@
-# PyTorch Lightning Module (Research Part)
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from efficientnet_pytorch import EfficientNet
-from torchvision import models
+import torch.optim as optim 
 
 from utils import get_dataloader, get_dataset
+from efficientnet.efficientnet_pytorch.model import EfficientNet
 
 
-class Baseline(pl.LightningModule):
-    """ Pretrained Baseline Models
-
-        1. resnet50
-        2. mobilenet_v2
-        3. efficientnet_b0
-    """
+class CustomEfficientNet(pl.LightningModule):
     def __init__(self, hparams):
-        super(Baseline, self).__init__()
+        super(CustomEfficientNet, self).__init__()
         self.hparams = hparams
         self.path = hparams['path']
         self.lr = hparams['lr']
         self.batch_size = hparams['batch_size']
-        self.num_classes = hparams['num_classes']
-        self.model = hparams['model']
-        
         self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
-        self.save_hyperparameters()
-
-        model_list = ['resnet', 'mobilenet'] # raise exception for efficientnet
-        if self.model not in model_list:
-            raise ValueError('Not supported Model!')
         
-        if self.model == 'resnet':
-            net = models.resnet50(pretrained=self.pretrain)
-            modules = list(net.children())[:-1]
-            self.extractor = nn.Sequential(*modules)    
-            self.classifier = nn.Linear(net.fc.in_features, self.num_classes)
-        elif self.model == 'mobilenet':
-            net = models.mobilenet_v2(pretrained=self.pretrain)
-            self.extractor = net.features
-            self.classifier = nn.Sequential(
-                nn.Dropout(0.2),
-                nn.Linear(net.last_channel, self.num_classes),
-            )
-        net = None
-            
+        mode = 'efficientnet-b0'
+        if self.pretrain:
+            self.model = EfficientNet.from_pretrained(mode)
+        else:
+            self.model = EfficientNet.from_name(mode)
+        self.additional_fc = nn.Sequential(
+            nn.Linear(self.model._fc.out_features, 2)
+        )
+
     def forward(self, x):
-        feature = self.extractor(x)
-        if self.model == 'resnet':
-            feature = feature.view(feature.size(0), -1)
-        elif self.model == 'mobilenet':
-            feature = F.adaptive_avg_pool2d(feature, 1).reshape(feature.shape[0], -1)
-        classification = self.classifier(feature)
-        return classification
-    
-    def prepare_data(self):
-        pass
+        if self.pretrain:
+            x = self.model.extract_features(x)
+
+            x = self.model._avg_pooling(x)
+            x = x.view(x.size(0), -1)
+            x = self.model._dropout(x)
+            x = self.model._fc(x)
+            return x
+
+        x = self.model(x)
+        x = self.additional_fc(x)
+        return x
 
     def train_dataloader(self):
         train_dset = get_dataset(self.path, 'train')
