@@ -16,7 +16,7 @@ class CustomEfficientNet(pl.LightningModule):
         self.batch_size = hparams['batch_size']
         self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
         
-        mode = 'efficientnet-b1'
+        mode = 'efficientnet-b0'
         if self.pretrain:
             self.model = EfficientNet.from_pretrained(mode)
         else:
