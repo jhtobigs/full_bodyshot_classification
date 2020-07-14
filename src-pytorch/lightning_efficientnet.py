@@ -1,6 +1,9 @@
 import pytorch_lightning as pl
+import torch
 import torch.nn as nn
+import torch.optim as optim 
 
+from utils import get_dataloader, get_dataset
 from efficientnet.efficientnet_pytorch.model import EfficientNet
 
 
@@ -13,23 +16,27 @@ class CustomEfficientNet(pl.LightningModule):
         self.batch_size = hparams['batch_size']
         self.pretrain = True if hparams['pretrain'].lower() == 'true' else False
         
-        self.model = EfficientNet.from_pretrained('efficientnet-b0')
+        mode = 'efficientnet-b1'
+        if self.pretrain:
+            self.model = EfficientNet.from_pretrained(mode)
+        else:
+            self.model = EfficientNet.from_name(mode)
         self.additional_fc = nn.Sequential(
-            nn.Linear(1000, 2)
+            nn.Linear(self.model._fc.out_features, 2)
         )
 
-        def forward(self, x):
+    def forward(self, x):
         if self.pretrain:
-            feature = self.model.extract_features(x)
-            # gradCAM Here
+            x = self.model.extract_features(x)
+
             x = self.model._avg_pooling(x)
             x = x.view(x.size(0), -1)
             x = self.model._dropout(x)
             x = self.model._fc(x)
-            x = self.additional_fc(x)
             return x
 
-        raise ValueError('not ready for pretrain==false')
+        x = self.model(x)
+        x = self.additional_fc(x)
         return x
 
     def train_dataloader(self):
