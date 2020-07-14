@@ -5,7 +5,6 @@ src-pytorch/data/train
 src-pytorch/data/test
 src-pytorch/data/valid
 src-pytorch/rexnet_pretrained/
-src-pytorch/sample.ckpt
 
 *.h5
 .ipynb_checkpoints

@@ -7,7 +7,6 @@ from pytorch_lightning.logging import TensorBoardLogger
 
 from lightning_research import Baseline
 from lightning_rexnetv1 import CustomReXNetV1
-from lightning_efficientnet import CustomEfficientNet
 
 
 class PrintCallback(pl.Callback):
@@ -18,12 +17,8 @@ class PrintCallback(pl.Callback):
 
 def main(hparams):
     pl.seed_everything(hparams.seed) # for reproducibility
-    if hparams.model == 'rexnet':
-        model = CustomReXNetV1(vars(hparams))
-    elif hparams.model == 'efficientnet':
-        model = CustomEfficientNet(vars(hparams))
-    else: # mobilenet, resnet
-        model = Baseline(vars(hparams))
+    model = CustomReXNetV1(vars(hparams), width_mult=1.0) \
+        if hparams.model == 'rexnet' else Baseline(vars(hparams))
     
     print_callback = [PrintCallback()]
     trainer = pl.Trainer(
