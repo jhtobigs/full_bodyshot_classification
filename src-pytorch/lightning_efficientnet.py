@@ -33,6 +33,7 @@ class CustomEfficientNet(pl.LightningModule):
             x = x.view(x.size(0), -1)
             x = self.model._dropout(x)
             x = self.model._fc(x)
+            x = self.additional_fc(x)
             return x
 
         x = self.model(x)
