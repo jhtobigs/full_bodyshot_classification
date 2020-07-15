@@ -70,42 +70,5 @@ def mubigs_demo():
 
     return render_template("mubigs_demo.html", uploaded_img=uploaded_icon, state = "Submit!")
 
-#predict 가져오기
-@app.route("/predict", methods=['POST'])
-def predict():
-    if request.method == 'POST':
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 이미지 올리면 지정한 폴더 안에 이미지 저장
-        """
-        model = torch.load('./model/sample.ckpt', map_location=DEVICE)  # .module -> 멀티 지피유 썼으면 뒤에 붙이기
-        model.eval()
-
-        # input image transform
-        def image_parse(self, image_path):
-            image = Image.open(UPLOAD_FOLDER+filename)
-
-            return image
-
-        def transform_image(image_bytes):
-            my_transforms = transforms.Compose([transforms.Resize((224,224)),
-                                                    transforms.ToTensor(),
-                                                    transforms.Normalize(
-                                                        [0.485, 0.456, 0.406],
-                                                        [0.229, 0.224, 0.225])])
-            image = image_parse(image_bytes, UPLOAD_FOLDER+"filename")
-            return my_transforms(image).unsqueeze(0)
-
-        # prediction
-        tensor = transform_image(filename, )
-        outputs = model.forward(tensor)
-        _, y_hat = outputs.max(1)
-        prediction = str(y_hat.item())
-
-        pred = "%s" %(str(prediction))"""
-
-        return "PASS"  #prediction값을 받아서 html에 넘겨주는 코드
-
-
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
