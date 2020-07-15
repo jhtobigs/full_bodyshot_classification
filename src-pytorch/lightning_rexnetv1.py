@@ -26,7 +26,7 @@ class Swish(nn.Module):
 
 
 def _add_conv(out, in_channels, channels, kernel=1, stride=1, pad=0,
-              num_group=1, active=True, relu6=False):
+            num_group=1, active=True, relu6=False):
     out.append(nn.Conv2d(in_channels, channels, kernel, stride, pad, groups=num_group, bias=False))
     out.append(nn.BatchNorm2d(channels))
     if active:
@@ -59,7 +59,7 @@ class SE(nn.Module):
 
 class LinearBottleneck(nn.Module):
     def __init__(self, in_channels, channels, t, stride, use_se=True, se_ratio=12,
-                 **kwargs):
+                **kwargs):
         super(LinearBottleneck, self).__init__(**kwargs)
         self.use_shortcut = stride == 1 and in_channels <= channels
         self.in_channels = in_channels
@@ -73,8 +73,8 @@ class LinearBottleneck(nn.Module):
             dw_channels = in_channels
 
         _add_conv(out, in_channels=dw_channels, channels=dw_channels, kernel=3, stride=stride, pad=1,
-                  num_group=dw_channels,
-                  active=False)
+                num_group=dw_channels,
+                active=False)
 
         if use_se:
             out.append(SE(dw_channels, dw_channels, se_ratio))
@@ -95,10 +95,10 @@ class ReXNetV1(nn.Module):
     """ dropout_rate default=0.2
     """
     def __init__(self, input_ch=16, final_ch=180, width_mult=1.0, depth_mult=1.0, classes=1000,
-                 use_se=True,
-                 se_ratio=12,
-                 dropout_ratio=0.2,
-                 bn_momentum=0.9):
+                use_se=True,
+                se_ratio=12,
+                dropout_ratio=0.2,
+                bn_momentum=0.9):
         super(ReXNetV1, self).__init__()
 
         layers = [1, 2, 2, 3, 3, 5]
@@ -134,10 +134,10 @@ class ReXNetV1(nn.Module):
 
         for block_idx, (in_c, c, t, s, se) in enumerate(zip(in_channels_group, channels_group, ts, strides, use_ses)):
             features.append(LinearBottleneck(in_channels=in_c,
-                                             channels=c,
-                                             t=t,
-                                             stride=s,
-                                             use_se=se, se_ratio=se_ratio))
+                                            channels=c,
+                                            t=t,
+                                            stride=s,
+                                            use_se=se, se_ratio=se_ratio))
 
         pen_channels = int(1280 * width_mult)
         _add_conv_swish(features, c, pen_channels)
@@ -158,10 +158,10 @@ class CustomReXNetV1(pl.LightningModule):
     """
     """
     def __init__(self, hparams, input_ch=16, final_ch=180, width_mult=1.0, depth_mult=1.0, classes=1000,
-                 use_se=True,
-                 se_ratio=12,
-                 dropout_ratio=0.2,
-                 bn_momentum=0.9):
+                use_se=True,
+                se_ratio=12,
+                dropout_ratio=0.2,
+                bn_momentum=0.9):
         super(CustomReXNetV1, self).__init__()
 
         self.hparams = hparams
@@ -174,7 +174,7 @@ class CustomReXNetV1(pl.LightningModule):
 
         if self.pretrain:
             self.model = ReXNetV1(width_mult=self.width_mult)
-            self.model.load_state_dict(torch.load('./model/rexnetv1_{}x.pth'.format(str(hparams['mult'])))) # load_scale
+            self.model.load_state_dict(torch.load('./rexnet_pretrained/rexnetv1_{}x.pth'.format(str(hparams['mult'])))) # load_scale
         self.save_hyperparameters()
 
         layers = [1, 2, 2, 3, 3, 5]
@@ -210,10 +210,10 @@ class CustomReXNetV1(pl.LightningModule):
 
         for block_idx, (in_c, c, t, s, se) in enumerate(zip(in_channels_group, channels_group, ts, strides, use_ses)):
             features.append(LinearBottleneck(in_channels=in_c,
-                                             channels=c,
-                                             t=t,
-                                             stride=s,
-                                             use_se=se, se_ratio=se_ratio))
+                                            channels=c,
+                                            t=t,
+                                            stride=s,
+                                            use_se=se, se_ratio=se_ratio))
 
         pen_channels = int(1280 * width_mult)
         _add_conv_swish(features, c, pen_channels)
@@ -222,7 +222,7 @@ class CustomReXNetV1(pl.LightningModule):
         self.features = nn.Sequential(*features)
         self.output = nn.Sequential(
             nn.Dropout(dropout_ratio),
-            nn.Conv2d(pen_channels, classes, 1, bias=True))
+            nn.Conv2d(pen_channels, classes, 1, bias=True)) # classes, 1, bias=True))
 
         # additional
         self.fc = nn.Sequential(
@@ -237,6 +237,7 @@ class CustomReXNetV1(pl.LightningModule):
 
         x = self.features(x)
         x = self.output(x).squeeze()
+        x = self.fc(x)
         return x
 
     def train_dataloader(self):
