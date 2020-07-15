@@ -5,10 +5,12 @@ import os
 import pytorch_lightning as pl
 import torch
 import torchvision.transforms as transforms
-from flask import Flask, redirect, request, url_for, render_template
+from flask import Flask, redirect, render_template, request, url_for
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from werkzeug.utils import secure_filename
+
+from lightning_efficientnet import CustomEfficientNet
 from lightning_rexnetv1 import CustomReXNetV1
 
 UPLOAD_FOLDER = './static/img_model/'  # 이미지 저장할 폴더 지정
@@ -35,12 +37,13 @@ def mubigs_demo():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # 이미지 올리면 지정한 폴더 안에 이미지 저장
             uploaded_img = "/static/img_model/"+filename
 
-            model = CustomReXNetV1.load_from_checkpoint('./model/sample.ckpt', map_location=DEVICE)
+            # model = CustomEfficientNet.load_from_checkpoint('./efficientnet-b0.ckpt', map_location=DEVICE)
+            model = CustomReXNetV1.load_from_checkpoint('./sample.ckpt', map_location=DEVICE)
             model.eval()
 
             # input image transform
             def image_parse(self, image_path):
-                image = Image.open(UPLOAD_FOLDER+filename)
+                image = Image.open(UPLOAD_FOLDER+filename).convert('RGB')
 
                 return image
 
@@ -58,6 +61,7 @@ def mubigs_demo():
 
             outputs = model.forward(tensor)
             _, y_hat = outputs.max(0)
+            print('ddd',y_hat)
             prediction = str(y_hat.item())
 
             state = "Submit!"

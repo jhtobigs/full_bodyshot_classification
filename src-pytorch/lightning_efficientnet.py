@@ -26,15 +26,15 @@ class CustomEfficientNet(pl.LightningModule):
         )
 
     def forward(self, x):
-        if self.pretrain:
-            x = self.model.extract_features(x)
+        # if self.pretrain:
+        #     x = self.model.extract_features(x)
 
-            x = self.model._avg_pooling(x)
-            x = x.view(x.size(0), -1)
-            x = self.model._dropout(x)
-            x = self.model._fc(x)
-            x = self.additional_fc(x)
-            return x
+        #     x = self.model._avg_pooling(x)
+        #     x = x.view(x.size(0), -1)
+        #     x = self.model._dropout(x)
+        #     x = self.model._fc(x)
+        #     x = self.additional_fc(x)
+        #     return x
 
         x = self.model(x)
         x = self.additional_fc(x)
