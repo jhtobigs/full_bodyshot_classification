@@ -1,6 +1,12 @@
-@import url(//cdn.rawgit.com/hiun/NanumSquare/master/nanumsquare.css);
+@font-face {
+    font-family: 'KoPubWorld Batang';
+    src: url("font/KoPubWorld Batang Medium.ttf");
+}
+
 body {
-    font-family: 'NanumSquare', sans-serif;
+    font-family: 'KoPubWorld Batang';
+    background-image: url("/static/img/backgroud.png");
+    background-repeat: repeat;
 }
 
 a:link {text-decoration: none; color: #ffffff;}
@@ -10,7 +16,7 @@ a:hover {text-decoration: none; color: #ffffff;}
 
 #mubigs_navbar {
     height: 50px;
-    background: black;
+    background: #787878;
     opacity: 90%;
     text-align: center;
     vertical-align: baseline;
@@ -66,10 +72,11 @@ a:hover {text-decoration: none; color: #ffffff;}
 .upload-container{
     position: relative;
     top: 30%;
-    border: 8px solid #333333;
-    border-radius: 20px;
+    border: 12px solid #454545;
+    border-radius: 30px;
     width: 350px;
     height: 350px;
+    overflow: hidden;
     display: inline-block;
     text-align: center;
 }
@@ -109,7 +116,7 @@ input:focus{
     width: 200px;
     height: 100px;
     border: none;
-    background: #ffffff;
+    background: none;
 
     font-size: 30px;
     border-radius: 20px;
@@ -121,7 +128,7 @@ input:focus{
 
 #nav-det{
     position: relative;
-    top: 100px;
+    top: 150px;
     width: 800px;
     display: inline-block;
     text-align: center;
@@ -129,25 +136,39 @@ input:focus{
     background: none;
 }
 
-#nav-det a{
+.nav-det-menu{
     position: relative;
     width: 300px;
     height: 100%;
-    padding: 10px 20px 10px 20px;
+    padding: 20px 30px 20px 30px;
     margin: 0px 30px 0px 30px;
     opacity: 40%;
-    font-size: 20px;
+    font-size: 25px;
     font-weight: normal;
     color: black;
+    border: 2px solid;
+    border-radius: 50px;
+    background: transparent;
+    filter: drop-shadow(5px 5px 1px rgba(0, 0, 0, 0.4));
+
     transition: opacity 0.2s;
 
-    border: 1px solid;
 }
+
 #nav-det a:hover{
     opacity: 100%;
+    color: black;
 }
 #nav-det a.active {
     opacity: 100%;
+    color: black;
+}
+
+#nav-det-menu-pass {
+    border-color: #6F78A6;
+}
+#nav-det-menu-fail {
+    border-color: #AD6E88;
 }
 
 .det-card-container{
@@ -160,69 +181,101 @@ input:focus{
 
 .det-item-container{
     position: relative;
-    width: 500px;
-    height: 700px;
+    width: 380px;
+    height: 556px;
     display: inline-block;
     background: white;
     border: 0px solid #333333;
-
+    text-align: center;
+}
+.det-card-container .pass{
+    background: #C0D6E2;
+}
+.det-card-container .fail{
+    background: #E6DEE8;
 }
 
 .det-review-container {
     position: relative;
     top: 20px;
 }
-.det-review-container p {
-    font-size: 18px;
-    color: black;
+.det-img-container{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+    width: 250px;
+    height: 334px;
 }
 
 .det-item-img{
-    position: relative;
-    top: 40px;
-    height: 350px;
-    width: auto;
+    height: 334px;
+}
+
+.det-review-id {
+    font-size: 18px;
+    color: black;
+}
+.det-review-review{
+    font-size: 15px;
+    color: black;
 }
 
 .det-btn-container{
     position: relative;
-    top: 150px;
+    top: 75%;
 }
 .det-btn {
-    width: 200px;
+    width: 100px;
     background: none;
-    font-size: 65px;
-    font-weight: bolder;
-    border: none;
+    font-size: 20px;
+    margin: 0 10px 0 10px;
+
+    border: 2px solid black;
+    border-radius: 50px;
+    border-color: #787878;
+    background: transparent;
+
 }
 .det-btn:focus {
     outline: none;
 }
 .det-pass-btn{
-    color: #2e6da4;
-    transition: background-color 0.5s;
+    transition: color 0.5s;
+    transition: filter 0.5s;
+    transition: border-color 0.5s;
 }
 .det-pass-btn:hover{
-    background-color: #7FD9FB;
+    color: #2e6da4;
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.4));
+    border-color: #6F78A6;
 }
 .det-pass-btn:active{
-    background-color: #7FD9FB;
+    color: #2e6da4;
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.4));
+    border-color: #6F78A6;
 }
 .det-fail-btn{
-    color: #d43f3a;
-    transition: background-color 0.5s;
+    transition: color 0.5s;
+    transition: filter 0.5s;
+    transition: border-color 0.5s;
 }
 .det-fail-btn:hover{
-    background-color: #FFA4C1;
+    color: #d43f3a;
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.4));
+    border-color: #AD6E88;
 }
-.det-fail-btn:active{
-    background-color: #FFA4C1;
+.det-fail-btn .active{
+    color: #d43f3a;
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.4));
+    border-color: #AD6E88;
 }
 
 
 .det-card-btn{
     position: relative;
-    top: -90px;
+    top: 200px;
     width: 75px;
     height: 75px;
     margin: 0px 10px 0px 10px;

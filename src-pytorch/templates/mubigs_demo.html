@@ -33,19 +33,19 @@
 
 
     </div>
-    <div class="view business_ex_view" id="view-2" style="background: #aaaaaa">
+    <div class="view business_ex_view" id="view-2">
         <nav id="nav-det" class="navbar navbar-default">
             <a id="nav-det-menu-pass" class="nav-det-menu active">PASS 확률이 높은 사진</a>
             <a id="nav-det-menu-fail" class="nav-det-menu">FAIL 확률이 높은 사진</a>
         </nav>
 
         <div class="det-card-container">
-            <div class="det-item-container det-item-left">
+            <div class="det-item-container det-item-left pass">
                 <div class="det-review-container ">
-                    <p id="det-review-id-0"> id : JuhoK</p>
-                    <p id="det-review-txt-0"> review : 이정도면 만족하네요 좋아요</p>
+                    <p class="det-review-id" id="det-review-id-0"> id : JuhoK</p>
+                    <p class="det-review-review" id="det-review-txt-0"> review : 이정도면 만족하네요 좋아요</p>
                 </div>
-                <div>
+                <div class="det-img-container">
                     <img id="det-item-img-0" class="det-item-img" src="{{ url_for('static', filename='img/pass_ex1.jpg') }}">
                 </div>
                 <div class="det-btn-container">
@@ -56,12 +56,12 @@
 
             <button id="item-previous" class="det-card-btn"> < </button>
 
-            <div class="det-item-container det-item-center">
+            <div class="det-item-container det-item-center pass">
                 <div class="det-review-container">
-                    <p id="det-review-id-1"> id : hyemzzzy</p>
-                    <p id="det-review-txt-1"> review : 옷이 너무 이뻐요 ^-^</p>
+                    <p class="det-review-id" id="det-review-id-1"> id : hyemzzzy</p>
+                    <p class="det-review-review" id="det-review-txt-1"> review : 옷이 너무 이뻐요 ^-^</p>
                 </div>
-                <div>
+                <div class="det-img-container">
                     {% if state=="PASS :)" %}
                     <img id="det-item-img-1" class="det-item-img" src="{{ uploaded_img }}">
                     {% else %}
@@ -76,12 +76,12 @@
 
             <button id="item-next" class="det-card-btn"> > </button>
 
-            <div class="det-item-container det-item-right">
+            <div class="det-item-container det-item-right pass">
                 <div class="det-review-container">
-                    <p id="det-review-id-2"> id : tyk13</p>
-                    <p id="det-review-txt-2"> review : 사이즈 적당한 것 같아요 괜찮네요~</p>
+                    <p class="det-review-id" id="det-review-id-2"> id : tyk13</p>
+                    <p class="det-review-review" id="det-review-txt-2"> review : 사이즈 적당한 것 같아요 괜찮네요~</p>
                 </div>
-                <div>
+                <div class="det-img-container">
                     <img id="det-item-img-2" class="det-item-img" src="{{ url_for('static', filename='img/pass_ex3.jpg') }}">
                 </div>
                 <div class="det-btn-container">

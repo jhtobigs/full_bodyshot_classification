@@ -87,36 +87,38 @@ $(document).ready(function () {
 
             //pass-fail 데이터 바꾸기
             if ($(this).attr('id') == "nav-det-menu-pass") {
+                $('.det-item-container').removeClass('fail')
+                $('.det-item-container').addClass('pass')
                 $('#det-item-img-0').attr("src", pass_img_list[0]);
                 $('#det-item-img-1').attr("src", pass_img_list[1]);
                 $('#det-item-img-2').attr("src", pass_img_list[2]);
 
-                $('#det-review-id-0').text(pass_id_list[0]);
-                $('#det-review-id-1').text(pass_id_list[1]);
-                $('#det-review-id-2').text(pass_id_list[2]);
+                $('#det-review-id-0').text("id : " + pass_id_list[0]);
+                $('#det-review-id-1').text("id : " + pass_id_list[1]);
+                $('#det-review-id-2').text("id : " + pass_id_list[2]);
 
-                $('#det-review-txt-0').text(pass_comment_list[0]);
-                $('#det-review-txt-1').text(pass_comment_list[1]);
-                $('#det-review-txt-2').text(pass_comment_list[2]);
+                $('#det-review-txt-0').text("review : " + pass_comment_list[0]);
+                $('#det-review-txt-1').text("review : " + pass_comment_list[1]);
+                $('#det-review-txt-2').text("review : " + pass_comment_list[2]);
             }
             else {
+                $('.det-item-container').removeClass('pass')
+                $('.det-item-container').addClass('fail')
                 $('#det-item-img-0').attr("src", fail_img_list[0]);
                 $('#det-item-img-1').attr("src", fail_img_list[1]);
                 $('#det-item-img-2').attr("src", fail_img_list[2]);
 
-                $('#det-review-id-0').text(fail_id_list[0]);
-                $('#det-review-id-1').text(fail_id_list[1]);
-                $('#det-review-id-2').text(fail_id_list[2]);
+                $('#det-review-id-0').text("id : " + fail_id_list[0]);
+                $('#det-review-id-1').text("id : " + fail_id_list[1]);
+                $('#det-review-id-2').text("id : " + fail_id_list[2]);
 
-                $('#det-review-txt-0').text(fail_comment_list[0]);
-                $('#det-review-txt-1').text(fail_comment_list[1]);
-                $('#det-review-txt-2').text(fail_comment_list[2]);
+                $('#det-review-txt-0').text("review : " + fail_comment_list[0]);
+                $('#det-review-txt-1').text("review : " + fail_comment_list[1]);
+                $('#det-review-txt-2').text("review : " + fail_comment_list[2]);
             }
         }
 
     });
-
-
     //det-card pre, nxt 버튼 클릭 이벤트
 
 });
