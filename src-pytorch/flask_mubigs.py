@@ -41,9 +41,7 @@ def mubigs_demo():
             uploaded_img = "/static/img_model/" + filename
 
             # model = CustomEfficientNet.load_from_checkpoint('./efficientnet.ckpt', map_location=DEVICE)
-            model = CustomReXNetV1.load_from_checkpoint(
-                "./rexnet.ckpt", map_location=DEVICE
-            )
+            model = CustomReXNetV1.load_from_checkpoint("./rexnet.ckpt", map_location=DEVICE)
             model.eval()
 
             # input image transform
@@ -57,9 +55,7 @@ def mubigs_demo():
                     [
                         transforms.Resize((224, 224)),
                         transforms.ToTensor(),
-                        transforms.Normalize(
-                            [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
-                        ),
+                        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
                     ]
                 )
                 image = image_parse(image_bytes, UPLOAD_FOLDER + "filename")
@@ -83,9 +79,7 @@ def mubigs_demo():
                 "mubigs_demo.html", uploaded_img=uploaded_img, state=state
             )  # prediction값을 받아서 html에 넘겨주는 코드
 
-    return render_template(
-        "mubigs_demo.html", uploaded_img=uploaded_icon, state="Submit!"
-    )
+    return render_template("mubigs_demo.html", uploaded_img=uploaded_icon, state="Submit!")
 
 
 if __name__ == "__main__":
